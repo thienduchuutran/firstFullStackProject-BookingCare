@@ -24,7 +24,10 @@ module.exports = {
       },
       description: {
         type: Sequelize.TEXT
-      },     
+      }, 
+      files: {
+        type: Sequelize.TEXT
+      },        
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
