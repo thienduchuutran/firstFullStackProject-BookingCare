@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('users', {
       // id: DataTypes.INTEGER,
       // firstName: DataTypes.STRING,
       // lastName: DataTypes.STRING,
@@ -34,7 +34,7 @@ module.exports = {
       gender: {
         type: Sequelize.BOOLEAN
       },
-      roldId: {
+      roleId: {
         type: Sequelize.STRING
       },   
       phoneNumber: {
@@ -57,6 +57,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('users');
   }
 };
