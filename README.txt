@@ -30,3 +30,18 @@ actually creates a new user from services (aka CRUDServices at this moment). The
 
 
 Using Promise to make sure the function always returns us a result!!!
+
+To save data to database, we need to know which table we wanna save into:
+1. import db into te file that is handling data (in this case we're creating a new user => need user table)
+2. using the function "create()". This function = 'INSERT INTO USER ..."
+    ex:
+    await db.User.create({
+                email: data.email,
+                password: hashPasswordFromBcrypt,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                address: data.address,
+                phoneNumber: data.phoneNumber,
+                gender: data.gender === '1'? true : false,
+                roleId: data.roleId,
+            })
