@@ -1,5 +1,5 @@
-
 import db from '../models/index'
+import CRUDServices from '../services/CRUDServices'
 let getHomePage = async(req, res) => {
 
     try{
@@ -23,7 +23,8 @@ let getCRUD = (req, res) => {
     return res.render('crud.ejs')
 }
 
-let postCRUD = (req, res) => {
+let postCRUD = async (req, res) => {
+    await CRUDServices.createNewUser(req.body)
     return res.send(req.body)
 }
 

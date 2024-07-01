@@ -20,4 +20,13 @@ Next is defining a method with restAPI standard
 ex: <form action="/post-crud" method="post">
 
 every time we add a new link route to our website, first need to initialize it in route aka web.js
-next we go to homeController aka homeController.js to actually create a function that handles this action of redirecting
+next we go to homeController aka homeController.js to actually create a function that handles this action of redirecting (aka creating a new user in this case)
+ 
+***To follow MVC model, we actually don't create the function that handles the action of creating a new user in homeController, but homeController will call a function that
+actually creates a new user from services (aka CRUDServices at this moment). The services files will actually have these functions of CRUD actions***
+***At the same time, we pass req.body aka all the info we got from the form of user input into the function called from services. That will be the data
+
+===> homeController is like a boss now, just directing the flow of data. Services is the one who actually handles the data
+
+
+Using Promise to make sure the function always returns us a result!!!
