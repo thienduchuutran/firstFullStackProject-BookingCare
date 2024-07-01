@@ -23,8 +23,13 @@ let getCRUD = (req, res) => {
     return res.render('crud.ejs')
 }
 
+let postCRUD = (req, res) => {
+    return res.send(req.body)
+}
+
 module.exports = {
     getHomePage: getHomePage,
     getAboutPage: getAboutPage,
     getCRUD: getCRUD,
+    postCRUD: postCRUD,
 }
