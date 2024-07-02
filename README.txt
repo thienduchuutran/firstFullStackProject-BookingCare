@@ -58,3 +58,8 @@ let díplayGetCRUD = async(req, res) => {
         dataTable: data
     })
 }
+
+
+In order to get an exact element by clicking into it:
+<a href="/edit-crud?id= <%=dataTable[i].id%>" class="btn-edit" type="button">Edit</a>
+
