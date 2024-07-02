@@ -48,3 +48,13 @@ To save data to database, we need to know which table we wanna save into:
 
 
 To exit a promise we need resolve
+
+In order to pass data from a functioning file to file view, we need to include the param data after a comma in the res.render() in homeController
+ex:
+let díplayGetCRUD = async(req, res) => {
+    let data = await CRUDServices.getAllUser()
+    console.log(data)
+    return res.render('displayCRUD.ejs', {
+        dataTable: data
+    })
+}

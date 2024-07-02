@@ -29,7 +29,9 @@ let postCRUD = async (req, res) => {
 let díplayGetCRUD = async(req, res) => {
     let data = await CRUDServices.getAllUser()
     console.log(data)
-    return res.send(data)
+    return res.render('displayCRUD.ejs', {
+        dataTable: data
+    })
 }
 
 module.exports = {
