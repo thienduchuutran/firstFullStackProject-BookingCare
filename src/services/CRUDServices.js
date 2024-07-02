@@ -54,7 +54,7 @@ let getUserInfoById = (userId) => {
         try{
             let user = await db.User.findOne({
                 where: {id: userId},
-                raw: true,
+                raw: true,  
             })
             if(user){
                 resolve(user)
@@ -67,8 +67,14 @@ let getUserInfoById = (userId) => {
     })
 }
 
+let updateUserData = (data) => {
+    console.log('data from service')
+    console.log(data)
+}
+
 module.exports = {
     createNewUser: createNewUser,
     getAllUser: getAllUser,
     getUserInfoById: getUserInfoById,
+    updateUserData: updateUserData,
 }

@@ -37,15 +37,22 @@ let díplayGetCRUD = async(req, res) => {
 let getEditCRUD = async (req, res) => {
     let userId = req.query.id
 
-    if (userId){            //checking condition aka validating user data
+    if (userId){            //checking condition aka validating user id
+
         let userData = await CRUDServices.getUserInfoById(userId)
-        console.log('------')
-        console.log(userData)
-        console.log('------')
-        res.send(userData)
+
+        return res.render('editCRUD.ejs', {
+            user: userData
+        })
     }else{
         return res.send('nothin')
     }
+}
+
+let putCRUD = async (req, res) => {
+    let data = req.body
+    await CRUDServices.updateUserData(data)
+    return res.send('update done')
 }
 
 module.exports = {
@@ -55,4 +62,5 @@ module.exports = {
     postCRUD: postCRUD,
     díplayGetCRUD: díplayGetCRUD,
     getEditCRUD: getEditCRUD,
+    putCRUD: putCRUD,
 }
