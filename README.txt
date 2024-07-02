@@ -45,3 +45,6 @@ To save data to database, we need to know which table we wanna save into:
                 gender: data.gender === '1'? true : false,
                 roleId: data.roleId,
             })
+
+
+To exit a promise we need resolve
