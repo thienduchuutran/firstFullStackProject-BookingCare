@@ -68,8 +68,26 @@ let getUserInfoById = (userId) => {
 }
 
 let updateUserData = (data) => {
-    console.log('data from service')
-    console.log(data)
+    return new Promise(async(resolve, reject) => {
+        try{
+            let user = await db.User.findOne({
+                where: {id: data.id}
+            })
+            if(user){
+                user.firstName = data.firstName
+                user.lastName = data.lastName
+                user.address = data.address
+
+                await user.save()
+
+                let allUser = await db.User.findAll()
+            }else{
+                resolve(allUser)
+            }
+        }catch(e){
+            reject(e)
+        }
+    })
 }
 
 module.exports = {

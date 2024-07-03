@@ -28,7 +28,6 @@ let postCRUD = async (req, res) => {
 
 let díplayGetCRUD = async(req, res) => {
     let data = await CRUDServices.getAllUser()
-    console.log(data)
     return res.render('displayCRUD.ejs', {
         dataTable: data
     })
@@ -51,8 +50,10 @@ let getEditCRUD = async (req, res) => {
 
 let putCRUD = async (req, res) => {
     let data = req.body
-    await CRUDServices.updateUserData(data)
-    return res.send('update done')
+    let allUsers = await CRUDServices.updateUserData(data)
+    return res.render('displayCRUD.ejs', {
+        dataTable: allUsers
+    })
 }
 
 module.exports = {
