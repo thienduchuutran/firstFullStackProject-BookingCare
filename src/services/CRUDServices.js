@@ -78,12 +78,30 @@ let updateUserData = (data) => {
                 user.lastName = data.lastName
                 user.address = data.address
 
-                await user.save()
+                await user.save()                       // update database
 
-                let allUser = await db.User.findAll()
+                let allUsers = await db.User.findAll() //   storing updated database into a variable then pass it to homeController with resolve()
+                resolve(allUsers)
             }else{
-                resolve(allUser)
+                resolve()
             }
+        }catch(e){
+            reject(e)
+        }
+    })
+}
+
+let deleteUserById = (userId) => {
+    return new Promise(async(resolve, reject) => {
+        try{
+            let user = await db.User.findOne({
+                where: {id: userId}
+            })
+            if(user){
+                await user.destroy()
+            }
+            resolve()
+            
         }catch(e){
             reject(e)
         }
@@ -95,4 +113,5 @@ module.exports = {
     getAllUser: getAllUser,
     getUserInfoById: getUserInfoById,
     updateUserData: updateUserData,
+    deleteUserById: deleteUserById,
 }
