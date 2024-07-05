@@ -63,3 +63,14 @@ let díplayGetCRUD = async(req, res) => {
 In order to get an exact element by clicking into it:
 <a href="/edit-crud?id= <%=dataTable[i].id%>" class="btn-edit" type="button">Edit</a>
 
+file userController.js in folder homeController now plays a role as a function returning API to connect BE and FE, so it only return JSON object, not 
+rendering any view
+ex:
+let handleLogin = (req, res) => {
+    return res.status(200).json({
+        message: 'hello wolre'
+    })
+}
+
+
+how to attach info as param from reactJS (FE) to nodejs (BE) aka into file userController
