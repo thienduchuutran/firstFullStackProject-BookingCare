@@ -27,7 +27,7 @@ let handleUserLogin = (email, password)=>{
                     if(check){
                         userData.errCode = 0
                         userData.errMessage = 'ok'
-                        delete user.password
+                        delete user.password    
                         userData.user = user
                         
                     }else{
