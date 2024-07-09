@@ -74,3 +74,24 @@ let handleLogin = (req, res) => {
 
 
 how to attach info as param from reactJS (FE) to nodejs (BE) aka into file userController
+
+
+
+IN ORDER TO write API to get all user info so the react side can get the info:
+create a new route in web.js: 
+    router.get('/api/get-all-user', userController.handlGetAllUsers);
+
+next create in userController:
+let handleGetAllUsers = async (req, res) => {
+    let users = await userService.getALlUsers()
+}
+
+then in userService.js create function that uses findOne and findAll in database according to id
+ALSO can't pass the password to client side
+====>             if(userId === 'ALL'){
+                users = await db.User.findAll({
+                    attributes:{
+                        exclude: ['password']
+                    }
+                })
+            }
