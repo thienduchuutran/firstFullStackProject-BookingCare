@@ -119,25 +119,26 @@ let createNewUser = (data) =>{
             if(check){
                 resolve({
                     errCode: 1,
-                    message: 'already in used, try another email'
+                    errMessage: 'already in used, try another email'
+                })
+            }else{
+                let hashPasswordFromBcrypt = await hashUserPassword(data.password)
+                await db.User.create({
+                    email: data.email,
+                    password: hashPasswordFromBcrypt,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    address: data.address,
+                    phoneNumber: data.phoneNumber,
+                    gender: data.gender === '1'? true : false,
+                    roleId: data.roleId,
+                })
+                resolve({
+                    errCode: 0,
+                    message : 'ok'
                 })
             }
 
-            let hashPasswordFromBcrypt = await hashUserPassword(data.password)
-            await db.User.create({
-                email: data.email,
-                password: hashPasswordFromBcrypt,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                address: data.address,
-                phoneNumber: data.phoneNumber,
-                gender: data.gender === '1'? true : false,
-                roleId: data.roleId,
-            })
-            resolve({
-                errCode: 0,
-                message : 'ok'
-            })
         }catch(e){
             reject(e)
         }
@@ -172,6 +173,7 @@ let updateUserData = (data) => {
     return new Promise (async(resolve, reject) => {
         try{
             if(!data.id){
+                console.log('check nodejs: ', data)
                 resolve({
                     errCode: 2,
                     errMessage: 'missing required param'
@@ -202,10 +204,35 @@ let updateUserData = (data) => {
     })
 }
 
+let getAllCodeService = (typeInput) => {
+    return new Promise(async(resolve, reject)=>{
+        try{
+            if(!typeInput){
+                resolve({
+                    errCode: 1,
+                    errMessage: "missing required param"
+                })
+            }else{
+                let res = {}
+                let allcode = await db.Allcode.findAll({
+                    where: {type: typeInput}
+                })
+                res.errCode = 0
+                res.data = allcode
+                resolve(res)   
+            }
+
+        }catch(e){
+            reject(e)       //at this point,the reject will direct the error info into the catch of the function in userController
+        }
+    })
+}
+
 module.exports = {
     handleUserLogin: handleUserLogin,
     getAllUsers: getAllUsers,
     createNewUser: createNewUser,
     deleteUser: deleteUser,
     updateUserData: updateUserData,
+    getAllCodeService: getAllCodeService,
 }
