@@ -16,7 +16,7 @@ let handleLogin = async (req, res) => {
     return res.status(200).json({
         errCode: userData.errCode,
         message: userData.errMessage,
-        user: userData ? userData.user : {}
+        user: userData.user ? userData.user : {}
     })
 }
 
@@ -67,8 +67,13 @@ let handleEditUser = async(req, res) => {
 
 let getAllCode = async(req, res) => {
     try{
-        let data = await userService.getAllCodeService(req.query.type)
-        return res.status(200).json(data)
+        // setTimeout(async()=>{                           //wait 5s then get all data from database
+        //     let data = await userService.getAllCodeService(req.query.id)
+        //     return res.status(200).json(data)
+        // },5000)
+        console.log('get all users: ', req.query.id)
+            let data = await userService.getAllCodeService(req.query.id)
+            return res.status(200).json(data)
     }catch(e){
         console.log('gett all code error:', e)
         return res.status(200).json({

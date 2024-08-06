@@ -28,8 +28,8 @@ let handleUserLogin = (email, password)=>{
                 //user existed
                 
                 let user = await db.User.findOne({
+                    attributes: ['email', 'roleId', 'password', 'firstName', 'lastName'],
                     where: {email : email},
-                    attributes: ['email', 'roleId', 'password'],
                     raw: true
                     
                 })
@@ -122,6 +122,7 @@ let createNewUser = (data) =>{
                     errMessage: 'already in used, try another email'
                 })
             }else{
+                console.log(data)
                 let hashPasswordFromBcrypt = await hashUserPassword(data.password)
                 await db.User.create({
                     email: data.email,
@@ -130,8 +131,9 @@ let createNewUser = (data) =>{
                     lastName: data.lastName,
                     address: data.address,
                     phoneNumber: data.phoneNumber,
-                    gender: data.gender === '1'? true : false,
+                    gender: data.gender,
                     roleId: data.roleId,
+                    positionId: data.positionId
                 })
                 resolve({
                     errCode: 0,
@@ -172,7 +174,7 @@ let deleteUser = (userId) => {
 let updateUserData = (data) => {
     return new Promise (async(resolve, reject) => {
         try{
-            if(!data.id){
+            if(!data.id || !data.roleId || !data.gender || !data.positionId){
                 console.log('check nodejs: ', data)
                 resolve({
                     errCode: 2,
@@ -184,9 +186,13 @@ let updateUserData = (data) => {
                 raw: false
             })
             if(user){
-                user.firstName = data.firstName,
-                user.lastName = data.lastName,
+                user.firstName = data.firstName
+                user.lastName = data.lastName
                 user.address = data.address
+                user.roleId = data.roleId
+                user.positionId = data.positionId
+                user.gender = data.gender
+                user.phoneNumber = data.phoneNumber
                 await user.save()                     // update database
                 resolve({
                     errCode: 0,
@@ -205,6 +211,7 @@ let updateUserData = (data) => {
 }
 
 let getAllCodeService = (typeInput) => {
+    console.log('from node: ', typeInput)
     return new Promise(async(resolve, reject)=>{
         try{
             if(!typeInput){
@@ -215,18 +222,19 @@ let getAllCodeService = (typeInput) => {
             }else{
                 let res = {}
                 let allcode = await db.Allcode.findAll({
-                    where: {type: typeInput}
+                    where: {type: typeInput},
                 })
                 res.errCode = 0
                 res.data = allcode
                 resolve(res)   
             }
-
+            console.log(allcode)
         }catch(e){
             reject(e)       //at this point,the reject will direct the error info into the catch of the function in userController
         }
     })
 }
+
 
 module.exports = {
     handleUserLogin: handleUserLogin,
