@@ -23,7 +23,6 @@ let handleUserLogin = (email, password)=>{
             let userData = {}
             
             let isExist = await checkUserEmail(email)
-            console.log('password: ' , password)
             if(isExist){
                 //user existed
                 
@@ -87,7 +86,6 @@ let getAllUsers = (userId) => {
     return new Promise(async(resolve, reject)=> {
         try{
             let users = ''
-            console.log(userId)
             if(userId === 'ALL'){
                 users = await db.User.findAll({
                     attributes:{
@@ -122,7 +120,6 @@ let createNewUser = (data) =>{
                     errMessage: 'already in used, try another email'
                 })
             }else{
-                console.log(data)
                 let hashPasswordFromBcrypt = await hashUserPassword(data.password)
                 await db.User.create({
                     email: data.email,
@@ -175,7 +172,6 @@ let updateUserData = (data) => {
     return new Promise (async(resolve, reject) => {
         try{
             if(!data.id || !data.roleId || !data.gender || !data.positionId){
-                console.log('check nodejs: ', data)
                 resolve({
                     errCode: 2,
                     errMessage: 'missing required param'
@@ -228,7 +224,6 @@ let getAllCodeService = (typeInput) => {
                 res.data = allcode
                 resolve(res)   
             }
-            console.log(allcode)
         }catch(e){
             reject(e)       //at this point,the reject will direct the error info into the catch of the function in userController
         }
