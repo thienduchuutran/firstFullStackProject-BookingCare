@@ -111,7 +111,7 @@ let getAllUsers = (userId) => {
 let createNewUser = (data) =>{
     return new Promise(async(resolve, reject)=>{
         try{
-            
+            console .log('check data: ', data)
             //check email if exists
             let check = await checkUserEmail(data.email)
             if(check){
@@ -130,7 +130,8 @@ let createNewUser = (data) =>{
                     phoneNumber: data.phoneNumber,
                     gender: data.gender,
                     roleId: data.roleId,
-                    positionId: data.positionId
+                    positionId: data.positionId,
+                    image: data.avatar
                 })
                 resolve({
                     errCode: 0,
@@ -189,6 +190,9 @@ let updateUserData = (data) => {
                 user.positionId = data.positionId
                 user.gender = data.gender
                 user.phoneNumber = data.phoneNumber
+                if(data.avatar){
+                    user.image = data.avatar
+                }
                 await user.save()                     // update database
                 resolve({
                     errCode: 0,
@@ -207,7 +211,6 @@ let updateUserData = (data) => {
 }
 
 let getAllCodeService = (typeInput) => {
-    console.log('from node: ', typeInput)
     return new Promise(async(resolve, reject)=>{
         try{
             if(!typeInput){
