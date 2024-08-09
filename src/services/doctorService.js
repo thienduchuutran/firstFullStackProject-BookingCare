@@ -28,6 +28,27 @@ let getTopDoctorHome = (limitInput) =>{
     })
 }
 
+let getAllDoctor = () =>{
+    return new Promise(async(resolve, reject) => {
+        try{
+            let doctors = await db.User.findAll({
+                where: {roleId: 'R2'},
+                attributes: {
+                    exclude: ['password', 'image']
+                }
+            })
+
+            resolve({
+                errCode: 0,
+                data: doctors
+            })
+        }catch(e){
+            reject(e)               //if this gets rejected it's gonna run into the catch of the function that calls this function in doctorController
+        }
+    })
+}
+
 module.exports = {
-    getTopDoctorHome: getTopDoctorHome
+    getTopDoctorHome: getTopDoctorHome,
+    getAllDoctor: getAllDoctor
 }
