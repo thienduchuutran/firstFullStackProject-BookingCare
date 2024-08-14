@@ -28,7 +28,42 @@ let getAllDoctors = async (req, res) => {
     }
 }
 
+let postInfoDoctor = async (req, res)=>{
+    try{
+        console.log(req.body)
+        let response = await doctorService.saveDetailInfoDoctor(req.body)
+        return res.status(200).json(response)
+    }catch(e){
+        console.log(e)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        })        
+    }
+}
+
+let getDetailDoctorById = async (req, res) => {
+    try{
+        if(!req.query.id){
+            return res.status(200).json({
+                errCode: 3,
+                errMessage: "Missing id"
+            })
+        }
+        let info = await doctorService.getDetailDoctorById(req.query.id)
+        return res.status(200).json(
+            info)
+    }catch(e){
+        console.log(e)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        })
+    }
+}
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
-    getAllDoctors: getAllDoctors
+    getAllDoctors: getAllDoctors,
+    postInfoDoctor: postInfoDoctor,
+    getDetailDoctorById: getDetailDoctorById
 }

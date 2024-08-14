@@ -48,7 +48,72 @@ let getAllDoctor = () =>{
     })
 }
 
+let saveDetailInfoDoctor = (inputData) => {
+    return new Promise(async(resolve, reject)=>{
+        try{
+            if(!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown){
+                // console.log(inputData.id)
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing param'
+                })
+            }else{
+                await db.Markdown.create({
+                    contentHTML: inputData.contentHTML,
+                    contentMarkdown: inputData.contentMarkdown,
+                    description: inputData.description,
+                    doctorId: inputData.doctorId
+                })
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Saved doctor info successfully!'
+                })
+            }
+        }catch(e){
+            reject(e)
+        }
+    })
+}
+
+let getDetailDoctorById = (inputId) => {
+    return new Promise(async(resolve, reject) => {
+        try{
+            if(!inputId){
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing param!!'
+                })
+            }else{
+                let data = await db.User.findOne({
+                    where: {id: inputId},
+                    attributes: {
+                        exclude: ['password', 'image']
+                    },
+                    include: [
+                        {model: db.Markdown,                //this include here means find and get a user from User table in db, also get any data related to that user in Markdown table
+                        attributes: ['description', 'contentHTML', 'contentMarkdown']
+                        },
+
+                        {model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']} //by doing this, we can also include any data from allcode table in the API for frontend
+                    ],
+                    raw: true,
+                    nest: true
+                },
+            )
+            resolve({
+                errCode: 0,
+                data: data
+            })
+            }
+        }catch(e){
+            reject(e)
+        }
+    })
+}
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
-    getAllDoctor: getAllDoctor
+    getAllDoctor: getAllDoctor,
+    saveDetailInfoDoctor: saveDetailInfoDoctor,
+    getDetailDoctorById: getDetailDoctorById
 }
