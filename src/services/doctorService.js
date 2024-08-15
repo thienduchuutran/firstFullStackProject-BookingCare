@@ -51,19 +51,38 @@ let getAllDoctor = () =>{
 let saveDetailInfoDoctor = (inputData) => {
     return new Promise(async(resolve, reject)=>{
         try{
-            if(!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown){
+            if(!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown
+                || !inputData.action
+            ){
                 // console.log(inputData.id)
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing param'
                 })
             }else{
-                await db.Markdown.create({
-                    contentHTML: inputData.contentHTML,
-                    contentMarkdown: inputData.contentMarkdown,
-                    description: inputData.description,
-                    doctorId: inputData.doctorId
-                })
+                if(inputData.action === 'CREATE'){
+                    await db.Markdown.create({
+                        contentHTML: inputData.contentHTML,
+                        contentMarkdown: inputData.contentMarkdown,
+                        description: inputData.description,
+                        doctorId: inputData.doctorId,
+    
+                    })
+                }else if(inputData.action === 'EDIT'){
+                    let doctorMarkdown  = await db.Markdown.findOne({
+                        where: {doctorId: inputData.doctorId},
+                        raw: false               //so that it becomes a sequelize object
+                    })
+                    if(doctorMarkdown){
+                        doctorMarkdown.contentHTML = inputData.contentHTML
+                        doctorMarkdown.contentMarkdown = inputData.contentMarkdown
+                        doctorMarkdown.description = inputData.description   
+                        // doctorMarkdown.updatedAt = new Date()                    
+                        await doctorMarkdown.save();
+                    }
+                    // Now the name was updated to "Ada" in the database!                    
+                }
+
 
                 resolve({
                     errCode: 0,
@@ -88,7 +107,7 @@ let getDetailDoctorById = (inputId) => {
                 let data = await db.User.findOne({
                     where: {id: inputId},
                     attributes: {
-                        exclude: ['password', 'image']
+                        exclude: ['password']
                     },
                     include: [
                         {model: db.Markdown,                //this include here means find and get a user from User table in db, also get any data related to that user in Markdown table
@@ -97,10 +116,16 @@ let getDetailDoctorById = (inputId) => {
 
                         {model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']} //by doing this, we can also include any data from allcode table in the API for frontend
                     ],
-                    raw: true,
+                    raw: false, //raw = true means sequelize object
                     nest: true
                 },
             )
+            if(data && data.image){
+                data.image = new Buffer(data.image, 'base64').toString('binary')    //converting image to base64 from backend side  
+            }
+
+            if(!data) data = {}
+
             resolve({
                 errCode: 0,
                 data: data
