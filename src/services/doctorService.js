@@ -1,5 +1,7 @@
+import { raw } from "body-parser"
 import db from "../models/index"
 require('dotenv').config()
+import _, { attempt } from 'lodash'
 
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE
     
@@ -156,8 +158,34 @@ let bulkCreateSchedule = (data) => {
                         return item
                     })
                 }
-                console.log('data sent: ', schedule)
-                await db.Schedule.bulkCreate( schedule )
+
+                //get all existing data
+                let existing = await db.Schedule.findAll({
+                    where: {doctorId: 2, date: 1724644800000},
+                    attributes: ['timeType', 'date', 'doctorId', 'maxNumber'],
+                    raw: true
+                })
+
+                //convert date
+                if(existing && existing.length > 0){
+                    existing = existing.map(item => {
+                        item.date = new Date(item.date).getTime()
+                        return item
+                    })
+                }
+
+                //compare the ones in db and the new ones that are just passed from UI
+                let toCreate = _.differenceWith(schedule, existing, (a, b) => {
+                    // // console.log('check a: ', a)
+                    // console.log('check b: ', b)
+                    return a.timeType === b.timeType && a.date === b.date
+                })
+
+                //if there is a difference between the new data and the existing data in db, we save the difference only
+                if(toCreate && toCreate.length > 0){
+                    await db.Schedule.bulkCreate( schedule )
+                }
+                console.log('check difference ================', toCreate)
                 resolve({
                     errCode: 0,
                     errMessage: 'Ok'
