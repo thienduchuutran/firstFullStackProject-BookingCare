@@ -1,4 +1,7 @@
 import db from "../models/index"
+require('dotenv').config()
+
+const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE
     
 
 let getTopDoctorHome = (limitInput) =>{
@@ -138,10 +141,29 @@ let getDetailDoctorById = (inputId) => {
 }
 
 let bulkCreateSchedule = (data) => {
-    return new Promise((resolve, reject)=>{
+    return new Promise(async(resolve, reject)=>{
         try{
-            console.log('data sent: ', data)
-            resolve('')
+            if(!data){
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required param'
+                })
+            }else{
+                let schedule = data.arrSchedule
+                if(schedule && schedule.length > 0){
+                    schedule = schedule.map(item => {
+                        item.maxNumber = MAX_NUMBER_SCHEDULE        //added this attribute so it aligns with what was designed in db
+                        return item
+                    })
+                }
+                console.log('data sent: ', schedule)
+                await db.Schedule.bulkCreate( schedule )
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Ok'
+                })
+            }
+
         }catch(e){
             reject(e)
         }
