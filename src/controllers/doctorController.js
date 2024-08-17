@@ -91,12 +91,12 @@ let getScheduleByDate = async(req, res) => {
             errMessage: 'Error from server'
         })  
     }
-
+}
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctors: getAllDoctors,
     postInfoDoctor: postInfoDoctor,
     getDetailDoctorById: getDetailDoctorById,
     bulkCreateSchedule: bulkCreateSchedule,
-    getScheduleByDate: getScheduleByDate
+    getScheduleByDate: getScheduleByDate,
 }

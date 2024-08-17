@@ -167,18 +167,18 @@ let bulkCreateSchedule = (data) => {
                 })
 
                 //convert date
-                if(existing && existing.length > 0){
-                    existing = existing.map(item => {
-                        item.date = new Date(item.date).getTime()
-                        return item
-                    })
-                }
+                // if(existing && existing.length > 0){
+                //     existing = existing.map(item => {
+                //         item.date = new Date(item.date).getTime()
+                //         return item
+                //     })
+                // }
 
                 //compare the ones in db and the new ones that are just passed from UI
                 let toCreate = _.differenceWith(schedule, existing, (a, b) => {
                     // // console.log('check a: ', a)
                     // console.log('check b: ', b)
-                    return a.timeType === b.timeType && a.date === b.date
+                    return a.timeType === b.timeType && +a.date === +b.date
                 })
 
                 //if there is a difference between the new data and the existing data in db, we save the difference only
@@ -215,8 +215,13 @@ let getScheduleByDate = (doctorId, date)=>{             //this API is to get the
                 let dataSchedule = await db.Schedule.findAll({
                     where: {
                         doctorId: doctorId,
-                        date: date
-                    }
+                        date: date                      //we passing timestamp as unix (a string of numbers) so we can easily change format later (using moment library)
+                    },
+                    include: [
+                        {model: db.Allcode, as: 'timeTypeData', attributes: ['valueEn', 'valueVi']} //by doing this, we can also include any data from allcode table in the API for frontend
+                    ],
+                    raw: false, //raw = true means sequelize object
+                    nest: true
                 })
                 if(!dataSchedule) dataSchedule = []
 

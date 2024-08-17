@@ -97,3 +97,8 @@ ALSO can't pass the password to client side
             }
 
 To dynamically load data from database:
+
+
+
+
+TO JOIN TABLES:
