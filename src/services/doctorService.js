@@ -145,7 +145,7 @@ let getDetailDoctorById = (inputId) => {
 let bulkCreateSchedule = (data) => {
     return new Promise(async(resolve, reject)=>{
         try{
-            if(!data){
+            if(!data.arrSchedule || !data.doctorId || !data.formattedDate){
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing required param'
@@ -161,7 +161,7 @@ let bulkCreateSchedule = (data) => {
 
                 //get all existing data
                 let existing = await db.Schedule.findAll({
-                    where: {doctorId: 2, date: 1724644800000},
+                    where: {doctorId: data.doctorId, date: data.formattedDate},
                     attributes: ['timeType', 'date', 'doctorId', 'maxNumber'],
                     raw: true
                 })
@@ -183,7 +183,12 @@ let bulkCreateSchedule = (data) => {
 
                 //if there is a difference between the new data and the existing data in db, we save the difference only
                 if(toCreate && toCreate.length > 0){
-                    await db.Schedule.bulkCreate( schedule )
+                    await db.Schedule.bulkCreate( toCreate )
+                }else{
+                    resolve({
+                        errCode: 0,
+                        errMessage: 'already saved!'
+                    })
                 }
                 console.log('check difference ================', toCreate)
                 resolve({
