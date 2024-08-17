@@ -136,9 +136,21 @@ let getDetailDoctorById = (inputId) => {
         }
     })
 }
+
+let bulkCreateSchedule = (data) => {
+    return new Promise((resolve, reject)=>{
+        try{
+            console.log('data sent: ', data)
+            resolve('')
+        }catch(e){
+            reject(e)
+        }
+    })
+}
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctor: getAllDoctor,
     saveDetailInfoDoctor: saveDetailInfoDoctor,
-    getDetailDoctorById: getDetailDoctorById
+    getDetailDoctorById: getDetailDoctorById,
+    bulkCreateSchedule: bulkCreateSchedule
 }
