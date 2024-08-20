@@ -57,8 +57,11 @@ let saveDetailInfoDoctor = (inputData) => {
     return new Promise(async(resolve, reject)=>{
         try{
             if(!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown
-                || !inputData.action
-            ){
+                || !inputData.action || !inputData.selectedPrice 
+                || !inputData.selectedPayment  || !inputData.selectedProvince 
+                || !inputData.nameClinic || !inputData.addressClinic
+                || !inputData.note )       //validating
+                {
                 // console.log(inputData.id)
                 resolve({
                     errCode: 1,
