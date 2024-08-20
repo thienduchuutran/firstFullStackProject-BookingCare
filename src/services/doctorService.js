@@ -85,10 +85,39 @@ let saveDetailInfoDoctor = (inputData) => {
                         doctorMarkdown.contentHTML = inputData.contentHTML
                         doctorMarkdown.contentMarkdown = inputData.contentMarkdown
                         doctorMarkdown.description = inputData.description   
-                        // doctorMarkdown.updatedAt = new Date()                    
+                        doctorMarkdown.updatedAt = new Date()                    
                         await doctorMarkdown.save();
                     }
                     // Now the name was updated to "Ada" in the database!                    
+                }
+
+                //upsert to Doctor_info table
+                let doctorInfo = await db.Doctor_Info.findOne({
+                    where: {
+                        doctorId: inputData.doctorId,           //using id to find an object of a doctor in Doctor_Info table
+                        raw: false
+                    }
+                })
+
+                if(doctorInfo){
+                    //update
+                    doctorInfo.priceId = inputData.selectedPrice                  //priceId in db is associated with selectedPrice 
+                    doctorInfo.provinceId = inputData.selectedProvince
+                    doctorInfo.paymentId = inputData.selectedPayment 
+                    doctorInfo.nameClinic = inputData.nameClinic
+                    doctorInfo.addressClinic = inputData.addressClinic
+                    doctorInfo.note = inputData.note                  
+                    await doctorInfo.save();
+                }else{
+                    //create
+                    await db.Doctor_Info.create({
+                        priceId : inputData.selectedPrice,             
+                        provinceId : inputData.selectedProvince,
+                        paymentId : inputData.selectedPayment, 
+                        nameClinic : inputData.nameClinic,
+                        addressClinic : inputData.addressClinic,
+                        note : inputData.note                         
+                    })
                 }
 
 
