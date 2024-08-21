@@ -1,7 +1,7 @@
 import { raw } from "body-parser"
 import db from "../models/index"
 require('dotenv').config()
-import _, { attempt } from 'lodash'
+import _, { attempt, includes } from 'lodash'
 
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE
     
@@ -95,12 +95,13 @@ let saveDetailInfoDoctor = (inputData) => {
                 let doctorInfo = await db.Doctor_Info.findOne({
                     where: {
                         doctorId: inputData.doctorId,           //using id to find an object of a doctor in Doctor_Info table
-                        raw: false
-                    }
+                    },
+                    raw: false                                  //raw = false so that it returns a sequelize instance, not an object
                 })
 
                 if(doctorInfo){
                     //update
+                    doctorInfo.doctorId = inputData.doctorId
                     doctorInfo.priceId = inputData.selectedPrice                  //priceId in db is associated with selectedPrice 
                     doctorInfo.provinceId = inputData.selectedProvince
                     doctorInfo.paymentId = inputData.selectedPayment 
@@ -111,6 +112,7 @@ let saveDetailInfoDoctor = (inputData) => {
                 }else{
                     //create
                     await db.Doctor_Info.create({
+                        doctorId: inputData.doctorId,
                         priceId : inputData.selectedPrice,             
                         provinceId : inputData.selectedProvince,
                         paymentId : inputData.selectedPayment, 
@@ -151,7 +153,20 @@ let getDetailDoctorById = (inputId) => {
                         attributes: ['description', 'contentHTML', 'contentMarkdown']
                         },
 
-                        {model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']} //by doing this, we can also include any data from allcode table in the API for frontend
+                        {model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']}, //by doing this, we can also include any data from allcode table in the API for frontend
+                        
+                        {model: db.Doctor_Info,
+                            attributes: {
+                                exclude: ['id', 'doctorId']
+                            },
+                            //this is an example of eager loading
+                            include: [
+                                {model: db.Allcode, as: 'priceTypeData', attributes: ['valueEn', 'valueVi']},        //this is to get the value (eng and viet) to show on UI
+                                {model: db.Allcode, as: 'provinceTypeData', attributes: ['valueEn', 'valueVi']},
+                                {model: db.Allcode, as: 'paymentTypeData', attributes: ['valueEn', 'valueVi']}
+                            ]               
+                        },
+                    
                     ],
                     raw: false, //raw = true means sequelize object
                     nest: true
