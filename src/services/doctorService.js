@@ -282,11 +282,49 @@ let getScheduleByDate = (doctorId, date)=>{             //this API is to get the
         }
     })
 }
+
+let getExtraInfoDoctorById = (idInput) => {
+    return new Promise (async(resolve, reject)=> {
+        try{
+            if(!idInput){
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required param'                    
+                })
+            }else{
+                let data = await db.Doctor_Info.findOne({
+                    where: {
+                        doctorId: idInput
+                    },
+                    attributes: {
+                        exclude: ['id', 'doctorId']
+                    },
+                    //this is an example of eager loading
+                    include: [
+                        {model: db.Allcode, as: 'priceTypeData', attributes: ['valueEn', 'valueVi']},        //this is to get the value (eng and viet) to show on UI
+                        {model: db.Allcode, as: 'provinceTypeData', attributes: ['valueEn', 'valueVi']},
+                        {model: db.Allcode, as: 'paymentTypeData', attributes: ['valueEn', 'valueVi']}
+                    ],
+                    raw: false,
+                    nest: true
+                })
+                if(!data) data = {}
+                resolve({
+                    errCode: 0,
+                    data: data
+                })
+            }
+        }catch(e){
+            reject(e)
+        }
+    })
+}
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctor: getAllDoctor,
     saveDetailInfoDoctor: saveDetailInfoDoctor,
     getDetailDoctorById: getDetailDoctorById,
     bulkCreateSchedule: bulkCreateSchedule,
-    getScheduleByDate: getScheduleByDate
+    getScheduleByDate: getScheduleByDate,
+    getExtraInfoDoctorById: getExtraInfoDoctorById
 }
