@@ -335,8 +335,11 @@ let getProfileDoctorById = (inputId) => {
                         exclude: ['password']
                     },
                     include: [
-
-                        {model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']}, //In User table, we already have positionId, so we gotta join positionData to get the actual name of the position accordingly
+                        {
+                            model: db.Markdown,
+                            attributes: ['description', 'contentHTML', 'contentMarkdown']
+                        },
+                        {model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']}, //In User table, we already have positionId, so we gotta join positionData to get the actual name of the position
                         
                         {model: db.Doctor_Info,
                             attributes: {
