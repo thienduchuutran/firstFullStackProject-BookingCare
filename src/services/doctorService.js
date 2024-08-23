@@ -319,6 +319,60 @@ let getExtraInfoDoctorById = (idInput) => {
         }
     })
 }
+
+let getProfileDoctorById = (inputId) => {
+    return new Promise(async(resolve, reject)=>{
+        try{
+            if(!inputId){
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required param'
+                })
+            }else{
+                let data = await db.User.findOne({
+                    where: {id: inputId},
+                    attributes: {
+                        exclude: ['password']
+                    },
+                    include: [
+
+                        {model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']}, //In User table, we already have positionId, so we gotta join positionData to get the actual name of the position accordingly
+                        
+                        {model: db.Doctor_Info,
+                            attributes: {
+                                exclude: ['id', 'doctorId']
+                            },
+                            //this is an example of eager loading
+                            include: [
+                                {model: db.Allcode, as: 'priceTypeData', attributes: ['valueEn', 'valueVi']},        //this is to get the value (eng and viet) to show on UI
+                                {model: db.Allcode, as: 'provinceTypeData', attributes: ['valueEn', 'valueVi']},
+                                {model: db.Allcode, as: 'paymentTypeData', attributes: ['valueEn', 'valueVi']}
+                            ]               
+                        },
+                    
+                    ],
+                    raw: false, //raw = true means sequelize object
+                    nest: true
+                },
+            )
+            if(data && data.image){
+                data.image = new Buffer(data.image, 'base64').toString('binary')    //converting image to base64 from backend side  
+            }
+
+            if(!data) data = {}
+
+            resolve({
+                errCode: 0,
+                data: data
+            })                
+            }
+        }catch(e){
+            reject(e)
+        }
+    })
+}
+
+
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctor: getAllDoctor,
@@ -326,5 +380,6 @@ module.exports = {
     getDetailDoctorById: getDetailDoctorById,
     bulkCreateSchedule: bulkCreateSchedule,
     getScheduleByDate: getScheduleByDate,
-    getExtraInfoDoctorById: getExtraInfoDoctorById
+    getExtraInfoDoctorById: getExtraInfoDoctorById,
+    getProfileDoctorById: getProfileDoctorById
 }
