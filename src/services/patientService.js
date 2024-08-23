@@ -20,15 +20,20 @@ let postBookAppointment = (data) => {
                     raw: true
                   });
                 
-                  console.log('>>>check uyser: ', user)     //findOrCreate returns an array with 2 element, first one is the object, second one is boolean indicating if a new object is created or already existed
+                      //findOrCreate returns an array with 2 element, first one is the object, second one is boolean indicating if a new object is created or already existed
                   //create a booking record
                   if(user && user[0]){
-                    await db.Booking.create({
-                        statusId: 'S1',
-                        doctorId: data.doctorId,
-                        patientId: user[0].id,
-                        date: data.date,
-                        timeType: data.timeType
+                    await db.Booking.findOrCreate({
+                        where: {
+                            patientId: user[0].id            //this is to prevent spamming
+                        },
+                        defaults: {
+                            statusId: 'S1',
+                            doctorId: data.doctorId,
+                            patientId: user[0].id,
+                            date: data.date,
+                            timeType: data.timeType
+                        }
                     })
                   }
 
