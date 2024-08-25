@@ -1,7 +1,7 @@
 require('dotenv').config()
 import nodemailer from 'nodemailer'
 
-let sendSimpleEmail = async(receiverEmail) => {
+let sendSimpleEmail = async(dataSend) => {
     let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 465,
@@ -14,10 +14,25 @@ let sendSimpleEmail = async(receiverEmail) => {
 
       let info = await transporter.sendMail({
         from: '"Duc Tran 👻" <thienductranhuu2784@gmail.com>', // sender address
-        to: receiverEmail, // list of receivers
-        subject: "Hello ✔", // Subject line
+        to: dataSend.receiverEmail, // list of receivers
+        subject: "Thông tin đặt lịch khám bệnh ✔", // Subject line
         text: "Hello world?", // plain text body
-        html: "<b>Hello world?</b>", // html body
+        html: `
+        <h3>Xin chào ${dataSend.patientName}</h3>
+        <p>Bạn nhận được email này vì đã đặt lịch khám bệnh với Duc Tran Booking Care</p>
+        <p>Thông tin dặt lịch khám bệnh:</p>
+        <div><b>Thời gian: ${dataSend.time}</b></div>
+        <div><b>Bác sĩ: ${dataSend.doctorName}</b></div>
+
+        <p>Nếu các thông tin trên là đúng, vui lòng nhấn vào link bên dưới
+        để xác nhận  và hoàn tất thủ tục đặt lịch</p>
+
+        <div>
+        <a href=${dataSend.redirectLink} target="_blank">Click here</a>
+        </div>
+
+        <div>Chân thành cảm ơn</div>
+        `, // html body
       });
 }
 
