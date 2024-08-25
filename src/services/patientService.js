@@ -18,10 +18,11 @@ let postBookAppointment = (data) => {
                 await emailService.sendSimpleEmail({
                     receiverEmail: data.email,
                     patientName: data.fullName,
-                    time: "8 - 9 CN 8/25",
-                    doctorName: "Duc",
+                    time: data.timeString,
+                    doctorName: data.doctorName,
+                    language: data.language,
                     redirectLink: "https://www.linkedin.com/in/duc-tran-277564229/",
-                    
+
 
                 })
                 //upsert patient

@@ -265,7 +265,9 @@ let getScheduleByDate = (doctorId, date)=>{             //this API is to get the
                         date: date                      //we passing timestamp as unix (a string of numbers) so we can easily change format later (using moment library)
                     },
                     include: [
-                        {model: db.Allcode, as: 'timeTypeData', attributes: ['valueEn', 'valueVi']} //by doing this, we can also include any data from allcode table in the API for frontend
+                        {model: db.Allcode, as: 'timeTypeData', attributes: ['valueEn', 'valueVi']}, //by doing this, we can also include any data from allcode table in the API for frontend
+                        {model: db.User , as: 'doctorData', attributes: ['firstName', 'lastName']}
+                        
                     ],
                     raw: false, //raw = true means sequelize object
                     nest: true
