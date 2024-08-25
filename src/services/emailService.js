@@ -17,7 +17,14 @@ let sendSimpleEmail = async(dataSend) => {
         to: dataSend.receiverEmail, // list of receivers
         subject: "Thông tin đặt lịch khám bệnh ✔", // Subject line
         text: "Hello world?", // plain text body
-        html: `
+        html: getBodyHTMLEmail(dataSend), 
+      });
+}
+
+let getBodyHTMLEmail = (dataSend) => {
+  let result = ''
+  if(dataSend.language === 'vi'){
+    result = `
         <h3>Xin chào ${dataSend.patientName}</h3>
         <p>Bạn nhận được email này vì đã đặt lịch khám bệnh với Duc Tran Booking Care</p>
         <p>Thông tin dặt lịch khám bệnh:</p>
@@ -32,8 +39,13 @@ let sendSimpleEmail = async(dataSend) => {
         </div>
 
         <div>Chân thành cảm ơn</div>
-        `, // html body
-      });
+        `
+  }
+  if(dataSend.language === 'en'){
+    result = `<h3>Hello ${dataSend.patientName}</h3> <p>You received this email because you have scheduled a medical appointment with Duc Tran Booking Care</p> <p>Appointment details:</p> <div><b>Time: ${dataSend.time}</b></div> <div><b>Doctor: ${dataSend.doctorName}</b></div> <p>If the information above is correct, please click the link below to confirm and complete the appointment process.</p> <div> <a href=${dataSend.redirectLink} target="_blank">Click here</a> </div> <div>Thank you very much</div>`
+  }
+
+  return result
 }
 
 
