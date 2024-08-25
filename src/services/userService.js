@@ -5,7 +5,6 @@ const salt = bcrypt.genSaltSync(10);
 
 
 let hashUserPassword = (password) => {
-    console.log(password)
     return new Promise(async(resolve, reject) => {
         try{
             let hashPassword = await bcrypt.hashSync(password, salt);  //since at this point we need to wait for the library to hash the password
@@ -111,7 +110,6 @@ let getAllUsers = (userId) => {
 let createNewUser = (data) =>{
     return new Promise(async(resolve, reject)=>{
         try{
-            console .log('check data: ', data)
             //check email if exists
             let check = await checkUserEmail(data.email)
             if(check){

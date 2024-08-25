@@ -173,7 +173,7 @@ let getDetailDoctorById = (inputId) => {
                 },
             )
             if(data && data.image){
-                data.image = new Buffer(data.image, 'base64').toString('binary')    //converting image to base64 from backend side  
+                data.image = Buffer.from(data.image, 'base64').toString('binary')    //converting image to base64 from backend side  
             }
 
             if(!data) data = {}
@@ -359,7 +359,7 @@ let getProfileDoctorById = (inputId) => {
                 },
             )
             if(data && data.image){
-                data.image = new Buffer(data.image, 'base64').toString('binary')    //converting image to base64 from backend side  
+                data.image = Buffer.from(data.image, 'base64').toString('binary')    //converting image to base64 from backend side  
             }
 
             if(!data) data = {}

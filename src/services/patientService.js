@@ -20,7 +20,7 @@ let postBookAppointment = (data) => {
                     raw: true
                   });
                 
-                      //findOrCreate returns an array with 2 element, first one is the object, second one is boolean indicating if a new object is created or already existed
+                    //findOrCreate returns an array with 2 element, first one is the object, second one is boolean indicating if a new object is created or already existed
                   //create a booking record
                   if(user && user[0]){
                     await db.Booking.findOrCreate({
