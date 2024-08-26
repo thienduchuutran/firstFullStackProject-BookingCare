@@ -1,6 +1,17 @@
 import db from "../models/index"
 require('dotenv').config()
 import emailService from './emailService'
+import { v4 as uuidv4 } from 'uuid';
+
+let buildUrlEmail = (doctorId) => {
+    let result = ''
+    let id = uuidv4(); // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'  
+
+    result = `${process.env.URL_REACT}/verify-booking?token=${id}&doctorId=${doctorId}`
+
+    return result
+
+}
 
 let postBookAppointment = (data) => {
     return new Promise (async(resolve, reject)=> {
@@ -21,9 +32,7 @@ let postBookAppointment = (data) => {
                     time: data.timeString,
                     doctorName: data.doctorName,
                     language: data.language,
-                    redirectLink: "https://www.linkedin.com/in/duc-tran-277564229/",
-
-
+                    redirectLink: buildUrlEmail(data.doctorId),
                 })
                 //upsert patient
                 let user = await db.User.findOrCreate({
