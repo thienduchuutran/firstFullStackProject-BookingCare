@@ -1,3 +1,4 @@
+import { raw } from "body-parser";
 import db from "../models/index"
 require('dotenv').config()
 import emailService from './emailService'
@@ -71,6 +72,46 @@ let postBookAppointment = (data) => {
     })
 }
 
+let postVerifyBookAppointment = (data)=>{
+    return new Promise(async(resolve, reject) => {
+        try{
+            if(!data.token || !data.doctorId
+            ){
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing param'
+                })
+            }else{
+                let appointment = await db.Booking.findOne({
+                    where: {
+                        doctorId: data.doctorId,
+                        token: data.token,
+                        statusId: 'S1'          //means only get the new ones
+                    },
+                    raw: false                  //sequelize object so that we can use save() function later
+                })
+
+                if(appointment){
+                    appointment.statusId = 'S2'
+                    await appointment.save()
+                    resolve({
+                        errCode: 0,
+                        errMessage: 'Update appointment successfully!'
+                    })
+                }else{
+                    resolve({
+                        errCode: 2,
+                        errMessage: 'Appointment has been activated or not existed'
+                    })  
+                }
+            }
+        }catch(e){
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
-    postBookAppointment: postBookAppointment
+    postBookAppointment: postBookAppointment,
+    postVerifyBookAppointment: postVerifyBookAppointment
 }
