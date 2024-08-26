@@ -3,11 +3,8 @@ require('dotenv').config()
 import emailService from './emailService'
 import { v4 as uuidv4 } from 'uuid';
 
-let buildUrlEmail = (doctorId) => {
-    let result = ''
-    let id = uuidv4(); // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'  
-
-    result = `${process.env.URL_REACT}/verify-booking?token=${id}&doctorId=${doctorId}`
+let buildUrlEmail = (doctorId, token) => {
+    let result = `${process.env.URL_REACT}/verify-booking?token=${token}&doctorId=${doctorId}`
 
     return result
 
@@ -24,7 +21,7 @@ let postBookAppointment = (data) => {
                     errMessage: 'Missing param'
                 })
             }else{
-
+                let token = uuidv4(); // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'  
 
                 await emailService.sendSimpleEmail({
                     receiverEmail: data.email,
@@ -32,7 +29,7 @@ let postBookAppointment = (data) => {
                     time: data.timeString,
                     doctorName: data.doctorName,
                     language: data.language,
-                    redirectLink: buildUrlEmail(data.doctorId),
+                    redirectLink: buildUrlEmail(data.doctorId, token),
                 })
                 //upsert patient
                 let user = await db.User.findOrCreate({
@@ -56,7 +53,8 @@ let postBookAppointment = (data) => {
                             doctorId: data.doctorId,
                             patientId: user[0].id,
                             date: data.date,
-                            timeType: data.timeType
+                            timeType: data.timeType,
+                            token: token
                         }
                     })
                   }
