@@ -1,6 +1,6 @@
 'use strict';
 
-const specialist = require('../models/specialist');
+const specialist = require('../models/specialty');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {

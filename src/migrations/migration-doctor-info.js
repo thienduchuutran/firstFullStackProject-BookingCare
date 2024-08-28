@@ -1,6 +1,6 @@
 'use strict';
 
-const specialist = require('../models/specialist');
+const specialist = require('../models/specialty');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -22,6 +22,12 @@ module.exports = {
       doctorId: {
         type: Sequelize.INTEGER,
         allowNull: false
+      },
+      specialtyId: {
+        type: Sequelize.INTEGER,
+      },
+      clinicId: {
+        type: Sequelize.INTEGER,
       },
       priceId: {
         type: Sequelize.STRING,
