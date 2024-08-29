@@ -56,38 +56,53 @@ let getAllSpecialties = () => {
     })
 }
 
-let getDetailSpecialtyById = (inputId) => {
+let getDetailSpecialtyById = (inputId, location) => {
     return new Promise(async(resolve, reject)=>{
         try {
-            if( !inputId)
+            if( !inputId || !location)
             {
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing param'
                 })
             }else{
-                let data = await db.Specialty.findOne({
-                    where: {
-                        id: inputId
-                    },
-                    attributes: ['descriptionHTML', 'descriptionMarkdown'],
-                })
-                if(data){
-                    let arrDoctorId = []
-                    let doctorSpecialty = db.Doctor_Info.findAll({
+                                                                              //with location = all, regardless of regions,  
+                    let data = await db.Specialty.findOne({                        //this is looking for what specialty as well as getting descriptions of such specialty
                         where: {
-                            specialtyId: inputId
-                        }
+                            id: inputId
+                        },
+                        attributes: ['descriptionHTML', 'descriptionMarkdown'],
                     })
-                }else{
-                    data = []
-                }
 
-                resolve({
-                    errMessage: 'ok',
-                    errCode: 0,
-                    data
-                })
+
+                    if(data){
+                        let doctorSpecialty = []
+                        if(location === 'ALL'){
+                            doctorSpecialty = await db.Doctor_Info.findAll({          //after getting data about such specialty, we go into Doctor_Info table
+                                where: {                                            //to get all doctors that have specialtyId === input specialtyId we pass in
+                                    specialtyId: inputId                            //at the same time also get doctorId and provinceId 
+                                },
+                                attributes: ['doctorId', 'provinceId'],
+                            })
+                        }else{
+                            //find by location
+                            doctorSpecialty = await db.Doctor_Info.findAll({          
+                                where: {
+                                    specialtyId: inputId,
+                                    provinceId: location
+                                },
+                                attributes: ['doctorId', 'provinceId'],
+                            })
+                        }
+                        data.doctorSpecialty = doctorSpecialty                  //finally append all data into data, so our data now has 3 attributes:
+                    }else{                                                      //descriptionHTML, descriptionMarkdown, and doctorSpecialty
+                        data = []
+                    }
+                    resolve({
+                        errMessage: 'ok',
+                        errCode: 0,
+                        data
+                    })
             }            
         } catch (e) {
             reject(e)
