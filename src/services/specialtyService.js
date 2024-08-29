@@ -73,7 +73,12 @@ let getDetailSpecialtyById = (inputId) => {
                     attributes: ['descriptionHTML', 'descriptionMarkdown'],
                 })
                 if(data){
-                    //do sth
+                    let arrDoctorId = []
+                    let doctorSpecialty = db.Doctor_Info.findAll({
+                        where: {
+                            specialtyId: inputId
+                        }
+                    })
                 }else{
                     data = []
                 }
