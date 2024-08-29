@@ -61,7 +61,7 @@ let checkRequiredFields = (inputData) => {
         let isValid = true
         let element = ''
         for(let i = 0 ; i<arrFields.length; i++){
-            if(!inputData[arr[i]]){
+            if(!inputData[arrFields[i]]){
                  isValid = false
                  element = arrFields[i]
                  break
@@ -124,7 +124,9 @@ let saveDetailInfoDoctor = (inputData) => {
                     doctorInfo.paymentId = inputData.selectedPayment 
                     doctorInfo.nameClinic = inputData.nameClinic
                     doctorInfo.addressClinic = inputData.addressClinic
-                    doctorInfo.note = inputData.note                  
+                    doctorInfo.note = inputData.note
+                    doctorInfo.specialtyId = inputData.specialtyId                  
+                    doctorInfo.clinicId = inputData.clinicId                   
                     await doctorInfo.save();
                 }else{
                     //create
@@ -135,7 +137,9 @@ let saveDetailInfoDoctor = (inputData) => {
                         paymentId : inputData.selectedPayment, 
                         nameClinic : inputData.nameClinic,
                         addressClinic : inputData.addressClinic,
-                        note : inputData.note                         
+                        note : inputData.note,
+                        specialtyId: inputData.specialtyId,
+                        clinicId: inputData.clinicId             
                     })
                 }
 
