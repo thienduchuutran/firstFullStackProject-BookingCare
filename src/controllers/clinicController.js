@@ -17,10 +17,11 @@ let createClinic = async(req, res) => {
 
 let getAllClinic = async (req, res) => {
     try{
-        let info = await clinicService.getAllClinic()   //we are just sending all info to server, thats why req.body not req.query
+        let info = await clinicService.getAllClinic()
         return res.status(200).json(                                                            
             info
         )
+        console.log('check info: ', info)
     }catch(e){
         console.log(e)
         return res.status(200).json({
