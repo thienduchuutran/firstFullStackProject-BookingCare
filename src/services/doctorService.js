@@ -417,11 +417,18 @@ let getListPatientForDoctor = (doctorId, date) => {
                     include: [              //this is where we also get patient info from User table right after getting basic patient info in Bookings table
                         {
                             model: db.User, as: 'patientData',
-                            attributes: ['email', 'firstName', 'address', 'gender']
+                            attributes: ['email', 'firstName', 'address', 'gender'],
+                            include: [
+                                {model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi']},  //this will give us the whole full name of a gender in eng and viet
+                            ]
                         },
                     ],
                     raw: false, //returning sequelize object
                     nest: true
+                })
+                resolve({
+                    errCode: 0,
+                    data: data
                 })
             }
         }catch(e){
