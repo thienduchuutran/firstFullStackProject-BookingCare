@@ -398,6 +398,30 @@ let getProfileDoctorById = (inputId) => {
     })
 }
 
+//we targeting Bookings table, getting patient info from Bookings
+let getListPatientForDoctor = (doctorId, date) => {
+    return new Promise(async(resolve, reject)=> {
+        try{
+            if(!doctorId || !date){
+                resolve({
+                    errCode: 1, 
+                    errMessage: "Misiing param"
+                })
+            }else{  
+                let data = await db.Bookings.findAll({
+                    where: {
+                        statusId: 'S2',          //since S2 means the booking status is confirmed but not completed yet
+                        doctorId: doctorId,
+                        date: date
+                    }
+                })
+            }
+        }catch(e){
+            reject(e)
+        }
+    })
+}
+
 
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
@@ -407,5 +431,6 @@ module.exports = {
     bulkCreateSchedule: bulkCreateSchedule,
     getScheduleByDate: getScheduleByDate,
     getExtraInfoDoctorById: getExtraInfoDoctorById,
-    getProfileDoctorById: getProfileDoctorById
+    getProfileDoctorById: getProfileDoctorById, 
+    getListPatientForDoctor: getListPatientForDoctor
 }

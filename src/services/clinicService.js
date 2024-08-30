@@ -56,7 +56,7 @@ let getAllClinic = () => {
     })
 }
 
-let getDetailClinicById = () => {
+let getDetailClinicById = (inputId) => {
     return new Promise(async(resolve, reject) => {
         try{
             if( !inputId)
@@ -66,26 +66,26 @@ let getDetailClinicById = () => {
                         errMessage: 'Missing param'
                     })
                 }else{
-                                                                                  //with location = all, regardless of regions,  
-                        let data = await db.Clinic.findOne({                        //this is looking for what specialty as well as getting descriptions of such specialty
+                                                             
+                        let data = await db.Clinic.findOne({                     
                             where: {
                                 id: inputId
                             },
-                            attributes: ['descriptionHTML', 'descriptionMarkdown'],
+                            attributes: ['name', 'address', 'descriptionHTML', 'descriptionMarkdown'],          //these are the fields given out in network tab on front end
                         })
     
     
                         if(data){
                             let doctorClinic = []
-                            doctorClinic = await db.Doctor_Info.findAll({          //after getting data about such specialty, we go into Doctor_Info table
-                                    where: {                                            //to get all doctors that have specialtyId === input specialtyId we pass in
-                                        clinicId: inputId                            //at the same time also get doctorId and provinceId 
+                            doctorClinic = await db.Doctor_Info.findAll({          
+                                    where: {                                           
+                                        clinicId: inputId                           
                                     },
                                     attributes: ['doctorId', 'provinceId'],
                                 })
                             
-                            data.doctorSpecialty = doctorSpecialty                  //finally append all data into data, so our data now has 3 attributes:
-                        }else{                                                      //descriptionHTML, descriptionMarkdown, and doctorSpecialty
+                            data.doctorClinic = doctorClinic        //this is so that we can receive any info in doctorClinic later in network tab on UI     
+                        }else{                                                     
                             data = []
                         }
                         resolve({
