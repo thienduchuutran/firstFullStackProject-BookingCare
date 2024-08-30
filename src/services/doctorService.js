@@ -422,6 +422,9 @@ let getListPatientForDoctor = (doctorId, date) => {
                                 {model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi']},  //this will give us the whole full name of a gender in eng and viet
                             ]
                         },
+                        {
+                            model: db.Allcode, as: 'timeTypeDataPatient', attributes: ['valueEn', 'valueVi']     //this will show the timeType info that user understands
+                        }
                     ],
                     raw: false, //returning sequelize object
                     nest: true

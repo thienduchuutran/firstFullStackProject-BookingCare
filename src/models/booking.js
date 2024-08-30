@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
       //initializing relationship between Booking and User, a booking belongs to a user
       Booking.belongsTo(models.User, {foreignKey: 'patientId', targetKey: 'id', as: 'patientData'})
 
+      // initializing relationship to show the timeType info that user understands
+      Booking.belongsTo(models.Allcode, {foreignKey: 'timeType', targetKey: 'keyMap', as: 'timeTypeDataPatient'})
+
     }
   }
   Booking.init({
