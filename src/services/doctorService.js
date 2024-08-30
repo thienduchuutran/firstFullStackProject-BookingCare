@@ -405,15 +405,23 @@ let getListPatientForDoctor = (doctorId, date) => {
             if(!doctorId || !date){
                 resolve({
                     errCode: 1, 
-                    errMessage: "Misiing param"
+                    errMessage: "Missing param"
                 })
             }else{  
-                let data = await db.Bookings.findAll({
+                let data = await db.Booking.findAll({
                     where: {
                         statusId: 'S2',          //since S2 means the booking status is confirmed but not completed yet
                         doctorId: doctorId,
                         date: date
-                    }
+                    },
+                    include: [              //this is where we also get patient info from User table right after getting basic patient info in Bookings table
+                        {
+                            model: db.User, as: 'patientData',
+                            attributes: ['email', 'firstName', 'address', 'gender']
+                        },
+                    ],
+                    raw: false, //returning sequelize object
+                    nest: true
                 })
             }
         }catch(e){

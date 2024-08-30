@@ -14,8 +14,9 @@ let buildUrlEmail = (doctorId, token) => {
 let postBookAppointment = (data) => {
     return new Promise (async(resolve, reject)=> {
         try{
+            //Since we wanna get more of patient info (gender and adress) for doctors to see, we add selectedGender and address here
             if(!data.email || !data.doctorId || !data.timeType || !data.date
-                || !data.fullName
+                || !data.fullName || !data.selectedGender || !data.address
             ){
                 resolve({
                     errCode: 1,
@@ -37,7 +38,10 @@ let postBookAppointment = (data) => {
                     where: { email: data.email },
                     defaults: {                                  //this default means if not found, then the code runs into defaults and does whatever in default
                       email: data.email,
-                      roleId: 'R3'
+                      roleId: 'R3',
+                      address: data.address,
+                      gender: data.selectedGender,                //this is where we actually save patients' gender and address to User table
+                        firstName: data.fullName
                     },
                     raw: true
                   });

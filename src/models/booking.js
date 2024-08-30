@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      //initializing relationship between Booking and User, a booking belongs to a user
+      Booking.belongsTo(models.User, {foreignKey: 'patientId', targetKey: 'id', as: 'patientData'})
+
     }
   }
   Booking.init({
