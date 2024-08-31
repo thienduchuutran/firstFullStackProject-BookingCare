@@ -440,7 +440,45 @@ let getListPatientForDoctor = (doctorId, date) => {
     })
 }
 
+let sendRemedy = (data) => {
+    return new Promise(async(resolve, reject)=> {
+        try{
+            if(!data.email || !data.doctorId || !data.patientId || !data.timeType){
+                resolve({
+                    errCode: 1, 
+                    errMessage: "Missing param"
+                })
+            }else{  
+                //update patient status from S2 to S3 in Booking table
+                let appointment = await db.Booking.findOne({
+                    where: {
+                        doctorId: data.doctorId,
+                        patientId: data.patientId,
+                        timeType: data.timeType,
+                        status: 'S2'
+                    },
+                    raw: false          //we need sequelize object to use save()
+                })
 
+                if(appointment){
+                    appointment.statusId = 'S3'
+                    await appointment.save()
+                }
+
+
+                //send remedy email
+
+
+                resolve({
+                    errCode: 0,
+                    data: data
+                })
+            }
+        }catch(e){
+            reject(e)
+        }
+    })
+}
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctor: getAllDoctor,
@@ -450,5 +488,6 @@ module.exports = {
     getScheduleByDate: getScheduleByDate,
     getExtraInfoDoctorById: getExtraInfoDoctorById,
     getProfileDoctorById: getProfileDoctorById, 
-    getListPatientForDoctor: getListPatientForDoctor
+    getListPatientForDoctor: getListPatientForDoctor,
+    sendRemedy: sendRemedy
 }
