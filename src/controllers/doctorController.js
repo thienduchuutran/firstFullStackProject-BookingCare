@@ -139,7 +139,7 @@ let getListPatientForDoctor = async(req, res) => {
 
 let sendRemedy = async(req, res)=>{
     try{
-        let info = await doctorService.sendRemedy(req.query.doctorId, req.query.date)   
+        let info = await doctorService.sendRemedy(req.body)   
         return res.status(200).json(                                                            
             info
         )

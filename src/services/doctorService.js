@@ -2,6 +2,7 @@ import { raw } from "body-parser"
 import db from "../models/index"
 require('dotenv').config()
 import _, { attempt, includes } from 'lodash'
+import emailService from '../services/emailService'
 
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE
     
@@ -441,9 +442,13 @@ let getListPatientForDoctor = (doctorId, date) => {
 }
 
 let sendRemedy = (data) => {
+    // console.log('check sendRemedy: ', data)
+    // return
     return new Promise(async(resolve, reject)=> {
         try{
-            if(!data.email || !data.doctorId || !data.patientId || !data.timeType){
+            if(!data.email || !data.doctorId || !data.patientId || !data.timeType ||
+                !data.imgBase64
+            ){
                 resolve({
                     errCode: 1, 
                     errMessage: "Missing param"
@@ -455,7 +460,7 @@ let sendRemedy = (data) => {
                         doctorId: data.doctorId,
                         patientId: data.patientId,
                         timeType: data.timeType,
-                        status: 'S2'
+                        statusId: 'S2'
                     },
                     raw: false          //we need sequelize object to use save()
                 })
@@ -467,11 +472,11 @@ let sendRemedy = (data) => {
 
 
                 //send remedy email
-
+                await emailService.sendAttachment(data)
 
                 resolve({
                     errCode: 0,
-                    data: data
+                    errMessage: 'ok'
                 })
             }
         }catch(e){
